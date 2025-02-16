@@ -10,7 +10,8 @@ from torch.nn.parallel import DataParallel
 from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
-from torchmetrics.functional import accuracy, f1, psnr
+from torchmetrics.functional import accuracy, f1_score as f1
+from torchmetrics.functional.image import peak_signal_noise_ratio as psnr
 
 from model.dataset import DIBCO
 from model.model import UNetBR
@@ -185,8 +186,8 @@ def main():
                         optimizer.zero_grad()
 
                 running_loss += loss.item() * img.size(0)
-                f1_score += f1(output[-1], gt.data.type(torch.uint8))
-                acc_score += accuracy(output[-1], gt.data.type(torch.uint8))
+                f1_score += f1(output[-1], gt.data.type(torch.uint8), task="binary")
+                acc_score += accuracy(output[-1], gt.data.type(torch.uint8), task="binary")
                 psnr_score += psnr(output[-1], gt.data)
 
             if phase == 'train':
