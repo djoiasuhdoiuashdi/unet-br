@@ -3,13 +3,12 @@ import copy
 import logging
 import os
 
-import numpy as np
 import torch
+import wandb
 import torchvision
 from torch.nn.parallel import DataParallel
 from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
-from torch.utils.data.sampler import SubsetRandomSampler
 from torchmetrics.functional import accuracy, f1_score as f1
 from torchmetrics.functional.image import peak_signal_noise_ratio as psnr
 
@@ -60,6 +59,17 @@ def parse_args():
 def main():
 
     args = parse_args()
+
+    wandb.init(project="unet-br", config={
+        "train_dir": args.train_dir,
+        "val_dir": args.val_dir,
+        "num_blocks": args.num_blocks,
+        "batch_size": args.batch_size,
+        "crop_size": args.crop_size,
+        "lr": args.lr,
+        "num_epochs": args.num_epochs,
+    })
+
     train_dir = args.train_dir
     val_dir = args.val_dir
     load = args.load
@@ -75,10 +85,6 @@ def main():
         setup_logger("./log/log.txt")
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    random_seed = 42
-    validation_split = .2
-    shuffle_dataset = True
 
     load_from = load
     weights_path = save
@@ -139,16 +145,6 @@ def main():
                                     step_size=lr_step_size,
                                     gamma=0.1)
 
-    # Dataloader
-    # dataset_size = len(datasets['train'])
-    # indices = list(range(dataset_size))
-    # split = int(np.floor(validation_split * dataset_size))
-    # if shuffle_dataset:
-    #     np.random.seed(random_seed)
-    #     np.random.shuffle(indices)
-    # train_indices, val_indices = indices[split:], indices[:split]
-    # train_sampler = SubsetRandomSampler(train_indices)
-    # valid_sampler = SubsetRandomSampler(val_indices)
     train_loader = DataLoader(datasets['train'],
                               batch_size=batch_size,
                               num_workers=2,
@@ -225,6 +221,13 @@ def main():
                 epoch_loss, epoch_f1, epoch_acc, epoch_psnr)
             logger.info(msg)
 
+            wandb.log({
+                f"{phase}/loss": epoch_loss,
+                f"{phase}/f1": epoch_f1,
+                f"{phase}/accuracy": epoch_acc,
+                f"{phase}/psnr": epoch_psnr,
+            })
+
             # deep copy the model
             if phase == 'val' and epoch_f1 > best_f1:
                 best_f1 = epoch_f1
@@ -242,6 +245,7 @@ def main():
         'model_state_dict': best_model_wts,
         'best_f1': best_f1
     }, weights_path)
+    wandb.finish()
 
 
 if __name__ == "__main__":
