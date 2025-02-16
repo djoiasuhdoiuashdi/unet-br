@@ -1,5 +1,8 @@
 import argparse
 import os
+
+import cv2
+import numpy as np
 import torch
 import torchvision
 from PIL import Image
@@ -74,12 +77,16 @@ def main():
                 # Post-process the output (e.g., invert the transform if needed)
                 processed_img = T.ToPILImage()(out.cpu())
 
+                gray_np = np.array(processed_img)
+                inverted = cv2.bitwise_not(gray_np)
+                _, otsu = cv2.threshold(inverted, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
                 # Prepare output filename
                 base_name = os.path.basename(fname)
-                output_fname = os.path.join(output_dir, f"{base_name}")
+                output_path = os.path.join(output_dir, base_name)
 
                 # Save the processed image
-                processed_img.save(output_fname)
+                cv2.imwrite(output_path, otsu)
             except Exception as e:
                 print(f"Failed to process {fname}: {e}")
 
