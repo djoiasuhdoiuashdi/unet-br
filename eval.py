@@ -12,8 +12,8 @@ from utils.util import crop  # Make sure this is used or remove if unnecessary
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train segmentation network')
-    parser.add_argument('input_dir', type=str,default="./dataset/input", help='Directory containing images to remove background')
-    parser.add_argument('output_dir', type=str, default="./output", help='Directory to save processed images')
+    parser.add_argument('--input_dir', type=str,default="./dataset/input", help='Directory containing images to remove background')
+    parser.add_argument('--output_dir', type=str, default="./output", help='Directory to save processed images')
     parser.add_argument('--load', help='Path to load weights from', type=str, default='./weight/weights.pth')
     parser.add_argument('--num_block', help='Number of UNet blocks', type=int, default=2)
     parser.add_argument('--extensions', nargs='+', default=['.jpg', '.jpeg', '.png', '.bmp', '.tif', '.tiff'],
