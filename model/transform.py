@@ -133,12 +133,12 @@ class RandomScale(object):
         groundtruth = np.asarray(groundtruth)
         image_dtype = image.dtype
         groundtruth_dtype = groundtruth.dtype
-        image = cv2.resize(image.astype(np.float),
+        image = cv2.resize(image.astype(np.float32),
                            None,
                            fx=f_scale,
                            fy=f_scale,
                            interpolation=cv2.INTER_LINEAR)
-        groundtruth = cv2.resize(groundtruth.astype(np.float),
+        groundtruth = cv2.resize(groundtruth.astype(np.float32),
                                  None,
                                  fx=f_scale,
                                  fy=f_scale,

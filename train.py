@@ -25,7 +25,7 @@ def parse_args():
     parser.add_argument('--data_dir',
                         help='data directory',
                         type=str,
-                        default='./dataset/DIBCO')
+                        default='./dataset/training_set')
     parser.add_argument('--load',
                         help='path to load weights from',
                         type=str,
