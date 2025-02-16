@@ -41,16 +41,16 @@ def parse_args():
                         help='number of UNet blocks',
                         type=int,
                         default=2)
-    parser.add_argument('--batch_size', help='batch size', type=int, default=8)
+    parser.add_argument('--batch_size', help='batch size', type=int, default=32)
     parser.add_argument('--crop_size', help='crop size', type=int, default=256)
     parser.add_argument('--lr',
                         help='learning rate',
                         type=float,
-                        default=0.001)
+                        default=0.004)
     parser.add_argument('--num_epochs',
                         help='number of epochs',
                         type=int,
-                        default=100)
+                        default=1000)
     args = parser.parse_args()
 
     return args
