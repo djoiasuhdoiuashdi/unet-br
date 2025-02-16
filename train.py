@@ -22,10 +22,14 @@ from utils.logger import setup_logger
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train model')
-    parser.add_argument('--data_dir',
+    parser.add_argument('--train_dir',
                         help='data directory',
                         type=str,
                         default='./dataset/training_set')
+    parser.add_argument('--val_dir',
+                        help='data directory',
+                        type=str,
+                        default='./dataset/validation_set')
     parser.add_argument('--load',
                         help='path to load weights from',
                         type=str,
@@ -56,7 +60,8 @@ def parse_args():
 def main():
 
     args = parse_args()
-    datadir = args.data_dir
+    train_dir = args.train_dir
+    val_dir = args.val_dir
     load = args.load
     save = args.save
     crop = args.crop_size
@@ -109,8 +114,8 @@ def main():
     }
 
     datasets = {
-        x: DIBCO(datadir, transform=data_transforms[x])
-        for x in ('train', 'val')
+        'train': DIBCO(train_dir, transform=data_transforms['train']),
+        'val': DIBCO(val_dir, transform=data_transforms['val']),
     }
 
     model = UNetBR(num_blocks)
