@@ -140,23 +140,26 @@ def main():
                                     gamma=0.1)
 
     # Dataloader
-    dataset_size = len(datasets['train'])
-    indices = list(range(dataset_size))
-    split = int(np.floor(validation_split * dataset_size))
-    if shuffle_dataset:
-        np.random.seed(random_seed)
-        np.random.shuffle(indices)
-    train_indices, val_indices = indices[split:], indices[:split]
-    train_sampler = SubsetRandomSampler(train_indices)
-    valid_sampler = SubsetRandomSampler(val_indices)
+    # dataset_size = len(datasets['train'])
+    # indices = list(range(dataset_size))
+    # split = int(np.floor(validation_split * dataset_size))
+    # if shuffle_dataset:
+    #     np.random.seed(random_seed)
+    #     np.random.shuffle(indices)
+    # train_indices, val_indices = indices[split:], indices[:split]
+    # train_sampler = SubsetRandomSampler(train_indices)
+    # valid_sampler = SubsetRandomSampler(val_indices)
     train_loader = DataLoader(datasets['train'],
                               batch_size=batch_size,
-                              sampler=train_sampler,
-                              num_workers=2)
+                              num_workers=2,
+                              shuffle=True,
+                              pin_memory=True)
     validation_loader = DataLoader(datasets['val'],
                                    batch_size=batch_size,
-                                   sampler=valid_sampler,
-                                   num_workers=2)
+                                   shuffle=False,
+                                   num_workers=2,
+                                   pin_memory=True
+                                   )
     dataloaders = {'train': train_loader, 'val': validation_loader}
 
     # Training loop
