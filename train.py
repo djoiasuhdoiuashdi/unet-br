@@ -190,7 +190,7 @@ def main():
                         optimizer.zero_grad()
 
                 running_loss += loss.item() * img.size(0)
-                f1_score += f1(output[-1], gt.data.type(torch.uint8), task="binary")
+                f1_score += 100 * f1(output[-1], gt.data.type(torch.uint8), task="binary")
                 acc_score += accuracy(output[-1], gt.data.type(torch.uint8), task="binary")
                 psnr_score += psnr(output[-1], gt.data)
 
@@ -213,7 +213,7 @@ def main():
 
             epoch_loss = running_loss / n_total_steps
             epoch_acc = acc_score / n_total_steps
-            epoch_f1 = f1_score / n_total_steps
+            epoch_f1 =  f1_score / n_total_steps
             epoch_psnr = psnr_score / n_total_steps
 
             msg = "Epoch: {}/{} \t {} \t Loss: {:.4f} F1: {:.4f} Acc: {:.4f}, PSNR: {:.4f}".format(
@@ -222,10 +222,10 @@ def main():
             logger.info(msg)
 
             wandb.log({
-                f"{phase}/loss": epoch_loss,
-                f"{phase}/f1": epoch_f1,
-                f"{phase}/accuracy": epoch_acc,
-                f"{phase}/psnr": epoch_psnr,
+                f"loss": epoch_loss,
+                f"fmeasure": epoch_f1,
+                f"accuracy": epoch_acc,
+                f"psnr": epoch_psnr,
             })
 
             # deep copy the model
