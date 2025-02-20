@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument('--val_dir',
                         help='data directory',
                         type=str,
-                        default='./dataset/validation_set')
+                        default='./dataset/validation')
     parser.add_argument('--load',
                         help='path to load weights from',
                         type=str,
